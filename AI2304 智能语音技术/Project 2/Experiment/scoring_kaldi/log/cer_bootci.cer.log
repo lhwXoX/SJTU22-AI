@@ -1,0 +1,6 @@
+# compute-wer-bootci --mode=present ark:exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/test_filt.chars.txt ark:exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/penalty_0.5/17.chars.txt > exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/cer_details/cer_bootci 
+# Started at Sat Jun  8 16:41:01 CST 2024
+#
+compute-wer-bootci --mode=present ark:exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/test_filt.chars.txt ark:exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/penalty_0.5/17.chars.txt 
+# Accounting: time=2 threads=1
+# Ended (code 0) at Sat Jun  8 16:41:03 CST 2024, elapsed time 2 seconds

@@ -1,0 +1,73 @@
+dataset,version,metric,mode,1_hf
+lukaemon_mmlu_college_biology,0eddf6,accuracy,ppl,43.75
+lukaemon_mmlu_college_chemistry,9e2300,accuracy,ppl,43.00
+lukaemon_mmlu_college_computer_science,5a1625,accuracy,ppl,44.00
+lukaemon_mmlu_college_mathematics,13e9be,accuracy,ppl,33.00
+lukaemon_mmlu_college_physics,f05705,accuracy,ppl,30.39
+lukaemon_mmlu_electrical_engineering,87e5d9,accuracy,ppl,53.10
+lukaemon_mmlu_astronomy,69352a,accuracy,ppl,52.63
+lukaemon_mmlu_anatomy,a367fc,accuracy,ppl,42.22
+lukaemon_mmlu_abstract_algebra,45f14f,accuracy,ppl,39.00
+lukaemon_mmlu_machine_learning,16eb9e,accuracy,ppl,37.50
+lukaemon_mmlu_clinical_knowledge,b9517f,accuracy,ppl,54.72
+lukaemon_mmlu_global_facts,45ca5d,accuracy,ppl,28.00
+lukaemon_mmlu_management,f1f94e,accuracy,ppl,63.11
+lukaemon_mmlu_nutrition,e8c66b,accuracy,ppl,57.52
+lukaemon_mmlu_marketing,6b54fd,accuracy,ppl,76.07
+lukaemon_mmlu_professional_accounting,aa502e,accuracy,ppl,38.30
+lukaemon_mmlu_high_school_geography,c5312c,accuracy,ppl,60.10
+lukaemon_mmlu_international_law,c502b5,accuracy,ppl,69.42
+lukaemon_mmlu_moral_scenarios,9dab41,accuracy,ppl,24.02
+lukaemon_mmlu_computer_security,557e7e,accuracy,ppl,69.00
+lukaemon_mmlu_high_school_microeconomics,9405bf,accuracy,ppl,51.26
+lukaemon_mmlu_professional_law,f36e47,accuracy,ppl,36.57
+lukaemon_mmlu_medical_genetics,038ad3,accuracy,ppl,54.00
+lukaemon_mmlu_professional_psychology,429c8f,accuracy,ppl,45.42
+lukaemon_mmlu_jurisprudence,ae7f17,accuracy,ppl,60.19
+lukaemon_mmlu_world_religions,904875,accuracy,ppl,58.48
+lukaemon_mmlu_philosophy,c9014a,accuracy,ppl,49.52
+lukaemon_mmlu_virology,611723,accuracy,ppl,40.96
+lukaemon_mmlu_high_school_chemistry,a25dca,accuracy,ppl,47.78
+lukaemon_mmlu_public_relations,02be4e,accuracy,ppl,49.09
+lukaemon_mmlu_high_school_macroeconomics,267c80,accuracy,ppl,46.92
+lukaemon_mmlu_human_sexuality,9a9941,accuracy,ppl,55.73
+lukaemon_mmlu_elementary_mathematics,197da6,accuracy,ppl,39.68
+lukaemon_mmlu_high_school_physics,777e6e,accuracy,ppl,37.09
+lukaemon_mmlu_high_school_computer_science,1bae4a,accuracy,ppl,55.00
+lukaemon_mmlu_high_school_european_history,ad843a,accuracy,ppl,58.18
+lukaemon_mmlu_business_ethics,83933d,accuracy,ppl,48.00
+lukaemon_mmlu_moral_disputes,2a78ed,accuracy,ppl,53.18
+lukaemon_mmlu_high_school_statistics,c6e690,accuracy,ppl,42.13
+lukaemon_mmlu_miscellaneous,ab0a88,accuracy,ppl,54.53
+lukaemon_mmlu_formal_logic,fa56ca,accuracy,ppl,35.71
+lukaemon_mmlu_high_school_government_and_politics,813526,accuracy,ppl,58.55
+lukaemon_mmlu_prehistory,017963,accuracy,ppl,54.94
+lukaemon_mmlu_security_studies,d60130,accuracy,ppl,66.53
+lukaemon_mmlu_high_school_biology,6f158a,accuracy,ppl,55.16
+lukaemon_mmlu_logical_fallacies,03a488,accuracy,ppl,55.21
+lukaemon_mmlu_high_school_world_history,7d5f06,accuracy,ppl,61.60
+lukaemon_mmlu_professional_medicine,cdcce1,accuracy,ppl,45.59
+lukaemon_mmlu_high_school_mathematics,eef511,accuracy,ppl,32.59
+lukaemon_mmlu_college_medicine,21a6fb,accuracy,ppl,50.29
+lukaemon_mmlu_high_school_us_history,e73ee8,accuracy,ppl,54.90
+lukaemon_mmlu_sociology,423c74,accuracy,ppl,70.65
+lukaemon_mmlu_econometrics,efcf91,accuracy,ppl,29.82
+lukaemon_mmlu_high_school_psychology,971917,accuracy,ppl,62.75
+lukaemon_mmlu_human_aging,406d1b,accuracy,ppl,51.57
+lukaemon_mmlu_us_foreign_policy,ac2379,accuracy,ppl,74.00
+lukaemon_mmlu_conceptual_physics,7f414f,accuracy,ppl,41.28
+hellaswag,47bff9,accuracy - clean,ppl,47.30
+hellaswag,47bff9,accuracy - input contaminated,ppl,39.29
+hellaswag,47bff9,accuracy - input-and-label contaminated,ppl,52.28
+winogrande,c5cf57,accuracy,ll,54.54
+ARC-e,a450bd,accuracy,ppl,46.91
+ARC-c-test,a450bd,accuracy - clean,ppl,29.60
+ARC-c-test,a450bd,accuracy - input contaminated,ppl,30.19
+ARC-c-test,a450bd,accuracy - input-and-label contaminated,ppl,34.16
+BoolQ,8ce714,accuracy,ppl,61.93
+mmlu-humanities,-,naive_average,ppl,51.69
+mmlu-stem,-,naive_average,ppl,44.12
+mmlu-social-science,-,naive_average,ppl,55.90
+mmlu-other,-,naive_average,ppl,50.97
+mmlu,-,naive_average,ppl,49.89
+mmlu-weighted,-,weighted_average,ppl,47.95

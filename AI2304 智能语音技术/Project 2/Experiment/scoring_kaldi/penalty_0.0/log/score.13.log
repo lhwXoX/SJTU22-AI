@@ -1,0 +1,5 @@
+# cat exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/penalty_0.0/13.txt | compute-wer --text --mode=present ark:exp/nnet3/tdnn_sp/decode_test/scoring_kaldi/test_filt.txt ark,p:- >& exp/nnet3/tdnn_sp/decode_test/wer_13_0.0 
+# Started at Sat Jun  8 16:38:31 CST 2024
+#
+# Accounting: time=0 threads=1
+# Ended (code 0) at Sat Jun  8 16:38:31 CST 2024, elapsed time 0 seconds

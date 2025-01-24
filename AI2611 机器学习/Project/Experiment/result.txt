@@ -1,0 +1,130 @@
+MNIST:
+Kernel: polynomial, acc = 0.939
+Kernel: linear, acc = 0.899
+Kernel: sigmoid, acc = 0.782
+Kernel: gaussian, acc = 0.942
+Kernel: sigmoid, linear acc = 0.872
+Kernel: sigmoid, polynomial acc = 0.886
+Kernel: polynomial, linear acc = 0.912
+Kernel: gaussian, linear acc = 0.915
+Kernel: gaussian, sigmoid acc = 0.876
+Kernel: gaussian, polynomial acc = 0.927
+Kernel: gaussian, sigmoid, polynomial, linear acc = 0.862
+Kernel: sigmoid gamma: 0.01 acc = 0.779
+Kernel: sigmoid gamma: 0.03 acc = 0.567
+Kernel: sigmoid gamma: 0.05 acc = 0.427
+Kernel: sigmoid gamma: 0.07 acc = 0.28
+Kernel: sigmoid gamma: 0.09 acc = 0.267
+MNIST Kernel: gaussian gamma: 0.01 acc = 0.877
+MNIST Kernel: gaussian gamma: 0.03 acc = 0.931
+MNIST Kernel: gaussian gamma: 0.05 acc = 0.929
+MNIST Kernel: gaussian gamma: 0.07 acc = 0.918
+MNIST Kernel: gaussian gamma: 0.09 acc = 0.836
+
+CIFAR10:
+Kernel: linear, acc = 0.438
+Kernel: polynomial, acc = 0.52
+Kernel: sigmoid, acc = 0.354
+Kernel: gaussian, acc = 0.478
+Kernel: sigmoid, linear acc = 0.301
+Kernel: sigmoid, polynomial acc = 0.407
+Kernel: polynomial, linear acc = 0.348
+Kernel: gaussian, linear acc = 0.324
+Kernel: gaussian, sigmoid acc = 0.377
+Kernel: gaussian, polynomial acc = 0.355
+Kernel: gaussian, sigmoid, polynomial, linear acc = 0.42
+Kernel: sigmoid, linear, gaussian, polynomial decay = 0.1 acc = 0.445
+Kernel: sigmoid, linear, gaussian, polynomial decay = 0.2 acc = 0.43
+Kernel: sigmoid, linear, gaussian, polynomial decay = 0.3 acc = 0.388
+Kernel: sigmoid, linear, gaussian, polynomial decay = 0.4 acc = 0.325
+Kernel: sigmoid, linear, gaussian, polynomial decay = 0.5 acc = 0.355
+Kernel: gaussian, linear, polynomial decay = 0.1 acc = 0.403
+Kernel: gaussian, linear, polynomial decay = 0.2 acc = 0.287
+Kernel: gaussian, linear, polynomial decay = 0.3 acc = 0.363
+Kernel: gaussian, linear, polynomial decay = 0.4 acc = 0.345
+Kernel: gaussian, linear, polynomial decay = 0.5 acc = 0.314
+Kernel: sigmoid, linear, polynomial decay = 0.1 acc = 0.429
+Kernel: sigmoid, linear, polynomial decay = 0.2 acc = 0.375
+Kernel: sigmoid, linear, polynomial decay = 0.3 acc = 0.342
+Kernel: sigmoid, linear, polynomial decay = 0.4 acc = 0.329
+Kernel: sigmoid, linear, polynomial decay = 0.5 acc = 0.273
+Kernel: sigmoid, gaussian, polynomial decay = 0.1 acc = 0.462
+Kernel: sigmoid, gaussian, polynomial decay = 0.2 acc = 0.446
+Kernel: sigmoid, gaussian, polynomial decay = 0.3 acc = 0.465
+Kernel: sigmoid, gaussian, polynomial decay = 0.4 acc = 0.464
+Kernel: sigmoid, gaussian, polynomial decay = 0.5 acc = 0.459
+Kernel: sigmoid, linear, gaussian decay = 0.1 acc = 0.419
+Kernel: sigmoid, linear, gaussian decay = 0.2 acc = 0.407
+Kernel: sigmoid, linear, gaussian decay = 0.3 acc = 0.366
+Kernel: sigmoid, linear, gaussian decay = 0.4 acc = 0.299
+Kernel: sigmoid, linear, gaussian decay = 0.5 acc = 0.294
+Kernel: polynomial degree: 1 gamma: 0.05 acc = 0.382
+Kernel: polynomial degree: 2 gamma: 0.05 acc = 0.492
+Kernel: polynomial degree: 3 gamma: 0.05 acc = 0.52
+Kernel: polynomial degree: 4 gamma: 0.05 acc = 0.526
+Kernel: polynomial degree: 5 gamma: 0.05 acc = 0.539
+Kernel: polynomial degree: 6 gamma: 0.05 acc = 0.283
+Kernel: polynomial degree: 7 gamma: 0.05 acc = 0.1
+Kernel: polynomial degree: 8 gamma: 0.05 acc = 0.1
+Kernel: polynomial degree: 9 gamma: 0.05 acc = 0.1
+Kernel: polynomial degree: 10 gamma: 0.05 acc = 0.1
+Kernel: polynomial degree: 1 gamma: 0.01 acc = 0.406
+Kernel: polynomial degree: 2 gamma: 0.01 acc = 0.438
+Kernel: polynomial degree: 3 gamma: 0.01 acc = 0.422
+Kernel: polynomial degree: 4 gamma: 0.01 acc = 0.435
+Kernel: polynomial degree: 5 gamma: 0.01 acc = 0.489
+Kernel: polynomial degree: 6 gamma: 0.01 acc = 0.523
+Kernel: polynomial degree: 7 gamma: 0.01 acc = 0.53
+Kernel: polynomial degree: 8 gamma: 0.01 acc = 0.532
+Kernel: polynomial degree: 9 gamma: 0.01 acc = 0.535
+Kernel: polynomial degree: 10 gamma: 0.01 acc = 0.537
+Kernel: polynomial degree: 1 gamma: 0.03 acc = 0.365
+Kernel: polynomial degree: 2 gamma: 0.03 acc = 0.433
+Kernel: polynomial degree: 3 gamma: 0.03 acc = 0.508
+Kernel: polynomial degree: 4 gamma: 0.03 acc = 0.528
+Kernel: polynomial degree: 5 gamma: 0.03 acc = 0.531
+Kernel: polynomial degree: 6 gamma: 0.03 acc = 0.542
+Kernel: polynomial degree: 7 gamma: 0.03 acc = 0.534
+Kernel: polynomial degree: 8 gamma: 0.03 acc = 0.467
+Kernel: polynomial degree: 9 gamma: 0.03 acc = 0.1
+Kernel: polynomial degree: 10 gamma: 0.03 acc = 0.1
+Kernel: polynomial degree: 1 gamma: 0.07 acc = 0.386
+Kernel: polynomial degree: 2 gamma: 0.07 acc = 0.495
+Kernel: polynomial degree: 3 gamma: 0.07 acc = 0.523
+Kernel: polynomial degree: 4 gamma: 0.07 acc = 0.546
+Kernel: polynomial degree: 5 gamma: 0.07 acc = 0.369
+Kernel: polynomial degree: 6 gamma: 0.07 acc = 0.1
+Kernel: polynomial degree: 7 gamma: 0.07 acc = 0.1
+Kernel: polynomial degree: 8 gamma: 0.07 acc = 0.1
+Kernel: polynomial degree: 9 gamma: 0.07 acc = 0.1
+Kernel: polynomial degree: 10 gamma: 0.07 acc = 0.1
+Kernel: polynomial degree: 1 gamma: 0.09 acc = 0.401
+Kernel: polynomial degree: 2 gamma: 0.09 acc = 0.495
+Kernel: polynomial degree: 3 gamma: 0.09 acc = 0.525
+Kernel: polynomial degree: 4 gamma: 0.09 acc = 0.523
+Kernel: polynomial degree: 5 gamma: 0.09 acc = 0.1
+Kernel: polynomial degree: 6 gamma: 0.09 acc = 0.1
+Kernel: polynomial degree: 7 gamma: 0.09 acc = 0.1
+Kernel: polynomial degree: 8 gamma: 0.09 acc = 0.1
+Kernel: polynomial degree: 9 gamma: 0.09 acc = 0.1
+Kernel: polynomial degree: 10 gamma: 0.09 acc = 0.1
+Kernel: sigmoid gamma: 0.01 acc = 0.384
+Kernel: sigmoid gamma: 0.03 acc = 0.372
+Kernel: sigmoid gamma: 0.05 acc = 0.297
+Kernel: sigmoid gamma: 0.07 acc = 0.249
+Kernel: sigmoid gamma: 0.09 acc = 0.236
+Kernel: gaussian gamma: 0.01 acc = 0.402
+Kernel: gaussian gamma: 0.03 acc = 0.444
+Kernel: gaussian gamma: 0.05 acc = 0.494
+Kernel: gaussian gamma: 0.07 acc = 0.494
+Kernel: gaussian gamma: 0.09 acc = 0.533
+CIFAR-10 Kernel: Linear C = 0.001 acc = 0.279
+CIFAR-10 Kernel: Linear C = 0.01 acc = 0.375
+CIFAR-10 Kernel: Linear C = 0.1 acc = 0.39
+CIFAR-10 Kernel: Linear C = 1 acc = 0.436
+CIFAR-10 Kernel: Linear C = 10 acc = 0.45
+MNIST Kernel: Linear C = 0.001 acc = 0.785
+MNIST Kernel: Linear C = 0.01 acc = 0.718
+MNIST Kernel: Linear C = 0.1 acc = 0.829
+MNIST Kernel: Linear C = 1 acc = 0.888
+MNIST Kernel: Linear C = 10 acc = 0.898
