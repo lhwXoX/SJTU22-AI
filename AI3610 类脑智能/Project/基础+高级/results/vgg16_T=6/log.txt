@@ -1,0 +1,1 @@
+Train acc: 98.78% loss:0.9124 Valid acc:3.78% loss:0.3657
