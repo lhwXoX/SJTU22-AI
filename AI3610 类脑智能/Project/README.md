@@ -44,5 +44,5 @@ snn_penalty = (snn_penalty1 * 0.3 + snn_penalty2 * 0.7)
 - **[Report.pdf](./Report/Report.pdf)** 
 包含创新点和分工等
 ### PPT
-- **[类脑智能课堂展示.pptx](./Report/Slides.pdf)**
+- **[Slides.pdf](./Report/Slides.pdf)**
 
