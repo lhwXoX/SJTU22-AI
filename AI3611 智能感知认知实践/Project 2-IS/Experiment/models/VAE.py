@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class VAE(nn.Module):
     def __init__(self, d_input: int, d_hidden: int, d_latent: int):
