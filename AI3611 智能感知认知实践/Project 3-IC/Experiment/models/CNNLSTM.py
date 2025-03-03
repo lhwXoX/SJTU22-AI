@@ -2,6 +2,7 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet101
+import random
 
 class Attention(nn.Module):
     def __init__(self, d_encoder, d_decoder, d_hidden):
@@ -54,9 +55,9 @@ class Decoder(nn.Module):
         self.gate = nn.Linear(d_decoder, d_encoder)
         self.out = nn.Linear(d_decoder, vocab_size)
         self.sigmoid = nn.Sigmoid()
-        self.init_weight()
+        self.init_weights()
         
-    def init_weight(self):
+    def init_weights(self):
         self.embedding.weight.data.uniform_(-0.1, 0.1)
         self.out.bias.data.fill_(0)
         self.out.weight.data.uniform_(-0.1, 0.1)
@@ -67,7 +68,7 @@ class Decoder(nn.Module):
         cell = self.init_cell(mean_encoder_output)
         return hidden, cell
 
-    def forward(self, encoder_output, encoded_caption, caption_length):
+    def forward(self, encoder_output, encoded_caption, caption_length, p=1.0):
         '''
         encoder_output: (batch_size, size, size, d_encoder)
         encoded_caption: (batch_size, max_len)
@@ -79,7 +80,7 @@ class Decoder(nn.Module):
         caption_length, sort_idx = caption_length.squeeze(1).sort(dim=0, descending=True) # (batch_size, )
         encoder_output, encoded_caption = encoder_output[sort_idx], encoded_caption[sort_idx]
         
-        embedding = self.embedding(encoded_caption)
+        embedding = self.embedding(encoded_caption) # (batch_size, max_length, d_embedding)
         hidden, cell = self.init_hidden_state(encoder_output) # h, c: (batch_size, d_endcoder)
         target_length = (caption_length - 1).tolist()
         max_length = max(target_length)
@@ -92,11 +93,19 @@ class Decoder(nn.Module):
             output, weight = self.attention(encoder_output[:batch_size_step], hidden[:batch_size_step]) # output, weight: (batch_size, d_encoder), (batch_size, d_encoder)
             gate = self.sigmoid(self.gate(hidden[:batch_size_step])) # (batch_size, d_encoder)
             output = output * gate
+            
+            # scheduled sampling
+            if random.random() <= p:
+                embedding = embedding[:batch_size_step, step, :] # (batch_size, d_embedding)
+            else:
+                embedding = self.embedding(predict_token[:batch_size_step]) # (batch_size, d_embedding)
+            
             hidden, cell = self.decode_step(
-                torch.cat([embedding[:batch_size_step, step, :], output], dim=1), # (batch_size_step, d_embedding + d_encoder)
+                torch.cat([embedding, output], dim=1), # (batch_size_step, d_embedding + d_encoder)
                 (hidden[:batch_size_step], cell[:batch_size_step]) # (batch_size_step, d_decoder)
             )
-            prediction = self.out(self.dropout(hidden))
+            prediction = self.out(self.dropout(hidden)) # (batch_size_step, vocab_size)
+            predict_token = prediction.argmax(dim=1) # (batch_size_step, )
             caption_predict[:batch_size_step, step, :] = prediction
             weights[:batch_size_step, step, :] = weight
             
