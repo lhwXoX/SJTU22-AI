@@ -98,7 +98,7 @@ class GPT(nn.Module):
         self.linear = nn.Linear(d_embedding, vocab_size)
         self.positionalEncoding = nn.Parameter(torch.rand(1, max_len, d_embedding))
         self.layers = nn.ModuleList([DecoderLayer(d_embedding, d_hidden, n_heads, max_len, drop_prob) for _ in range(n_layers)])
-        self.init_weight()
+        self.init_weights()
         
     def forward(self, x):
         print(x.shape)
@@ -111,7 +111,7 @@ class GPT(nn.Module):
         output = F.log_softmax(output, dim=-1)
         return output
     
-    def init_weight(self):
+    def init_weights(self):
         nn.init.uniform_(self.TokenEmb.weight, -0.1, 0.1)
         nn.init.uniform_(self.linear.weight, -0.1, 0.1)
         nn.init.zeros_(self.linear.bias)

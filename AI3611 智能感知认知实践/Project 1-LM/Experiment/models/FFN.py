@@ -8,6 +8,7 @@ class FeedForwardNetwork(nn.Module):
         self.TokenEmb = nn.Embedding(vocab_size, d_embedding)
         self.linear1 = nn.Linear(d_embedding * n_step, d_hidden)
         self.linear2 = nn.Linear(d_hidden, vocab_size)
+        self.init_weights()
         
     def forward(self, inputs):
         # input: [batch_size, n_step, vocab_size]
@@ -16,7 +17,7 @@ class FeedForwardNetwork(nn.Module):
         output = F.log_softmax(self.linear2(hidden), dim=-1)
         return output # [batch_size, vocab_size]
         
-    def init_weight(self):
+    def init_weights(self):
         nn.init.uniform_(self.TokenEmb.weight, -0.1, 0.1)
         nn.init.uniform_(self.linear1.weight, -0.1, 0.1)
         nn.init.uniform_(self.linear2.weight, -0.1, 0.1)

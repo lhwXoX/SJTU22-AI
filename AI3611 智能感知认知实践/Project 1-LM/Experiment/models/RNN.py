@@ -9,7 +9,7 @@ class RecurrentNeuralNetwork(nn.Module):
         self.TokenEmb = nn.Embedding(vocab_size, d_embedding)
         self.rnn = nn.RNN(d_embedding, d_hidden, n_layers, dropout=drop_prob)
         self.linear = nn.Linear(d_hidden, vocab_size)
-        self.init_weight()
+        self.init_weights()
         
     def forward(self, inputs, hidden):
         embedding = self.dropout(self.TokenEmb(inputs))
@@ -18,7 +18,7 @@ class RecurrentNeuralNetwork(nn.Module):
         output = F.log_softmax(output, dim=-1)
         return output, hidden
     
-    def init_weight(self):
+    def init_weights(self):
         nn.init.uniform_(self.TokenEmb.weight, -0.1, 0.1)
         nn.init.uniform_(self.linear.weight, -0.1, 0.1)
         nn.init.zeros_(self.linear.bias, -0.1, 0.1)
