@@ -2,6 +2,7 @@ import os
 import sys
 from tqdm import tqdm
 import numpy as np
+from datetime import datetime
 import torch
 import torch.optim as optim
 from torchvision.datasets import MNIST
@@ -19,9 +20,14 @@ if __name__ == '__main__':
     # select device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-    # path to save model
-    save_path = os.path.join(BASE_DIR, 'checkpoint')
+    # path to save model and figure
+    time_str = datetime.strftime(datetime.now(), '%m-%d_%H-%M')
+    save_path = os.path.join(BASE_DIR, 'output', time_str)
     os.makedirs(save_path, exist_ok=True)
+    model_path = os.path.join(save_path, 'checkpoint')
+    figure_path = os.path.join(save_path, 'figure')
+    os.makedirs(model_path, exist_ok=True)
+    os.makedirs(figure_path, exist_ok=True)
     
     # create dataloader
     train_dataset = MNIST('./data/', train=True, transform=transforms.ToTensor(), download=True) # without other transforms for systhesis task
@@ -49,7 +55,7 @@ if __name__ == '__main__':
     reconstruction_loss = {'train': [], 'test': []}
     total_loss = {'train': [], 'test': []}
     best_epoch = 0
-    best_reconstruction = 1e5
+    best_reconstruction = checkpoint['best_reconstruction_loss'] if cfg.pretrain else 1e5
     
     # train and test
     for epoch in range(strat_epoch, cfg.max_epochs + 1):
@@ -114,21 +120,22 @@ if __name__ == '__main__':
         total_loss['test'].append(test_loss_mean)
         
         # plot loss curve
-        
+        plot_line(regularization_loss, reconstruction_loss, total_loss, figure_path)
 
         # save model
-        save_path = os.path.join(BASE_DIR, 'checkpoint')
         checkpoint = {'model_state_dict': model.state_dict(),
                       'optimizer_state_dict': optimizer.state_dict(),
-                      'epoch': epoch}
+                      'epoch': epoch,
+                      'best_reconstruction_loss': best_reconstruction}
         if epoch > 100 and best_reconstruction > test_loss_rec_mean:
             best_reconstruction = test_loss_rec_mean
             best_epoch = epoch
-            path_checkpoint = os.path.join(save_path, 'checkpoint_best.pkl')
+            path_checkpoint = os.path.join(model_path, 'checkpoint_best.pkl')
             torch.save(checkpoint, path_checkpoint)
         if epoch % cfg.save_interval == 0:
-            path_checkpoint = os.path.join(save_path, 'checkpoint_epoch_{}.pkl'.format(epoch))
+            path_checkpoint = os.path.join(model_path, 'checkpoint_epoch_{}.pkl'.format(epoch))
             torch.save(checkpoint, path_checkpoint)
     
     # complete trainig
-    print('Training Done, best reconstruction loss: {:.4f} in epoch {}'.format(best_reconstruction, best_epoch))
+    time_end = datetime.strftime(datetime.now(), '%m-%d_%H-%M')
+    print('Training Done at {}, best reconstruction loss: {:.4f} in epoch {}'.format(time_end, best_reconstruction, best_epoch))

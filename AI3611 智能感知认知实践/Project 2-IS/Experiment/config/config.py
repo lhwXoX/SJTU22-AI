@@ -9,7 +9,7 @@ cfg.d_latent = 64
 
 # pretrain
 cfg.pretrain = False
-cfg.path_checkpoint = 'checkpoint/model.pkl'
+cfg.path_checkpoint = 'output/checkpoint/model.pkl'
 
 # train
 cfg.max_epochs = 200
