@@ -5,7 +5,7 @@ cfg = EasyDict()
 # model
 cfg.d_input = 784
 cfg.d_hidden = 256
-cfg.d_latent = 64
+cfg.d_latent = 32
 
 # pretrain
 cfg.pretrain = False

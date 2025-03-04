@@ -139,3 +139,13 @@ if __name__ == '__main__':
     # complete trainig
     time_end = datetime.strftime(datetime.now(), '%m-%d_%H-%M')
     print('Training Done at {}, best reconstruction loss: {:.4f} in epoch {}'.format(time_end, best_reconstruction, best_epoch))
+    
+    # plot latent and output
+    assert cfg.d_latent in [1, 2, 32]
+    if cfg.d_latent == 1:
+        plot_1d(test_loader, model, figure_path, device)
+    elif cfg.d_latent == 2:
+        plot_2d(test_loader, model, figure_path, device)
+    else:
+        plot_32d(test_loader, model, figure_path, device)
+    print('Plot Done')
