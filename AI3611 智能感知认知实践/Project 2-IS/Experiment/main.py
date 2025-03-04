@@ -13,16 +13,18 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(BASE_DIR, '..'))
 
 from models.VAE import VAE
-from config.config import cfg
+from config import config
 from utils.function import *
 
 if __name__ == '__main__':
+    # load configuration
+    args = config.parse_args()
+
     # select device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     # path to save model and figure
-    time_str = datetime.strftime(datetime.now(), '%m-%d_%H-%M')
-    save_path = os.path.join(BASE_DIR, 'output', time_str)
+    save_path = os.path.join(BASE_DIR, 'output', args.save_name)
     os.makedirs(save_path, exist_ok=True)
     model_path = os.path.join(save_path, 'checkpoint')
     figure_path = os.path.join(save_path, 'figure')
@@ -32,20 +34,19 @@ if __name__ == '__main__':
     # create dataloader
     train_dataset = MNIST('./data/', train=True, transform=transforms.ToTensor(), download=True) # without other transforms for systhesis task
     test_dataset = MNIST('./data/', train=False, transform=transforms.ToTensor(), download=True)
-    train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
     
     # create model
-    model = VAE(cfg.d_input, cfg.d_hidden, cfg.d_latent)
+    model = VAE(args.d_input, args.d_hidden, args.d_latent)
     
-    # create optimizer and scheduler
-    optimizer = optim.Adam(model.parameters(), lr=cfg.learning_rate)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', factor=cfg.factor, patience=cfg.patience, threshold=cfg.threshold, min_lr=cfg.min_lr)
+    # create optimizer
+    optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
     
     # load model and optimizer if pretrain
     strat_epoch = 1
-    if cfg.pretrain:
-        checkpoint = torch.load(cfg.path_checkpoint, map_location=device)
+    if args.pretrain:
+        checkpoint = torch.load(args.path_checkpoint, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         strat_epoch = checkpoint['epoch'] + 1
@@ -55,10 +56,10 @@ if __name__ == '__main__':
     reconstruction_loss = {'train': [], 'test': []}
     total_loss = {'train': [], 'test': []}
     best_epoch = 0
-    best_reconstruction = checkpoint['best_reconstruction_loss'] if cfg.pretrain else 1e5
+    best_reconstruction = checkpoint['best_reconstruction_loss'] if args.pretrain else 1e5
     
     # train and test
-    for epoch in range(strat_epoch, cfg.max_epochs + 1):
+    for epoch in range(strat_epoch, args.max_epochs + 1):
         # train VAE
         train_loss, train_loss_rec, train_loss_reg = [], [], []
         model.train()
@@ -70,7 +71,7 @@ if __name__ == '__main__':
             
             # compute loss and back propagation
             loss_regularization, loss_reconstruction = loss_funtion(inputs, outputs, logvar, mu)
-            total_loss = loss_reconstruction + cfg.epsilon * loss_regularization
+            total_loss = loss_reconstruction + args.epsilon * loss_regularization
             total_loss.backward()
             optimizer.stop()
             
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         train_loss_rec_mean = np.mean(train_loss_rec)
         train_loss_reg_mean = np.mean(train_loss_reg)
         
-        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, cfg.max_epochs + 1, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean))
+        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, args.max_epochs + 1, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean))
         
         # test VAE
         test_loss, test_loss_rec, test_loss_reg = [], [], []
@@ -97,7 +98,7 @@ if __name__ == '__main__':
             
             # compute loss and back propagation
             loss_regularization, loss_reconstruction = loss_funtion(inputs, outputs, logvar, mu)
-            total_loss = loss_reconstruction + cfg.epsilon * loss_regularization
+            total_loss = loss_reconstruction + args.epsilon * loss_regularization
             
             # record loss
             test_loss.append(total_loss.item())
@@ -109,7 +110,7 @@ if __name__ == '__main__':
         test_loss_rec_mean = np.mean(test_loss_rec)
         test_loss_reg_mean = np.mean(test_loss_reg)
         
-        print('Testing: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, cfg.max_epochs + 1, test_loss_rec_mean, test_loss_reg_mean, test_loss_mean))
+        print('Testing: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, args.max_epochs + 1, test_loss_rec_mean, test_loss_reg_mean, test_loss_mean))
         
         # record loss
         regularization_loss['train'].append(train_loss_reg_mean)
@@ -127,12 +128,12 @@ if __name__ == '__main__':
                       'optimizer_state_dict': optimizer.state_dict(),
                       'epoch': epoch,
                       'best_reconstruction_loss': best_reconstruction}
-        if epoch > 100 and best_reconstruction > test_loss_rec_mean:
+        if epoch >= 100 and best_reconstruction > test_loss_rec_mean:
             best_reconstruction = test_loss_rec_mean
             best_epoch = epoch
             path_checkpoint = os.path.join(model_path, 'checkpoint_best.pkl')
             torch.save(checkpoint, path_checkpoint)
-        if epoch % cfg.save_interval == 0:
+        if epoch % args.save_interval == 0:
             path_checkpoint = os.path.join(model_path, 'checkpoint_epoch_{}.pkl'.format(epoch))
             torch.save(checkpoint, path_checkpoint)
     
@@ -141,10 +142,10 @@ if __name__ == '__main__':
     print('Training Done at {}, best reconstruction loss: {:.4f} in epoch {}'.format(time_end, best_reconstruction, best_epoch))
     
     # plot latent and output
-    assert cfg.d_latent in [1, 2, 32]
-    if cfg.d_latent == 1:
+    assert args.d_latent in [1, 2, 32]
+    if args.d_latent == 1:
         plot_1d(test_loader, model, figure_path, device)
-    elif cfg.d_latent == 2:
+    elif args.d_latent == 2:
         plot_2d(test_loader, model, figure_path, device)
     else:
         plot_32d(test_loader, model, figure_path, device)
