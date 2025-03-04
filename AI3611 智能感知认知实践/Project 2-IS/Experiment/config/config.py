@@ -15,9 +15,5 @@ cfg.path_checkpoint = 'checkpoint/model.pkl'
 cfg.max_epochs = 200
 cfg.batch_size = 128
 cfg.learning_rate = 2e-3
-
-# scheduler
-cfg.factor = 0.5
-cfg.patience = 5
-cfg.threshold = 1e-3
-cfg.min_lr = 1e-4
+cfg.epsilon = 1 # weight of regularization loss
+cfg.save_interval = 20

@@ -32,4 +32,4 @@ class VAE(nn.Module):
         mu, logvar = self.encoder(inputs).chunk(2, dim=1)
         latent = self.reparameterize(mu, logvar)
         outputs = self.decoder(latent).view(batch_size, channel, height, width)
-        return outputs
+        return outputs, latent, mu, logvar
