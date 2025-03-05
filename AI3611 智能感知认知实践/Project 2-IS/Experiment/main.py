@@ -17,6 +17,9 @@ from config import config
 from utils.function import *
 
 if __name__ == '__main__':
+    # set random seed
+    setup_seed(2025)
+    
     # load configuration
     args = config.parse_args()
 
@@ -40,7 +43,7 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
     
     # create model
-    model = VAE(args.d_input, args.d_hidden, args.d_latent)
+    model = VAE(args.d_input, args.d_hidden, args.d_latent).to(device)
     
     # create optimizer
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
@@ -48,11 +51,11 @@ if __name__ == '__main__':
     # load state if pretrain
     strat_epoch = 1
     if args.pretrain:
-        checkpoint = torch.load(args.path_checkpoint, map_location=device)
+        path_checkpoint = os.path.join(BASE_DIR, args.path_checkpoint)
+        checkpoint = torch.load(path_checkpoint, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         strat_epoch = checkpoint['epoch'] + 1
-    model.to(device)
     
     # initialize recorder
     regularization_loss = {'train': [], 'test': []}
@@ -139,7 +142,7 @@ if __name__ == '__main__':
         if epoch % args.save_interval == 0:
             path_checkpoint = os.path.join(model_path, 'checkpoint_epoch_{}.pkl'.format(epoch))
             torch.save(checkpoint, path_checkpoint)
-            
+      
     # record final loss
     file = open(loss_path, 'a')
     file.write('Training:\nReconstruction Loss: {:.2f}\nRegularization Loss: {:.2f}\nTotal Loss: {:.2f}\nTesting:\nReconstruction Loss: {:.2f}\nRegularization Loss: {:.2f}\nTotal Loss: {:.2f}'.format(train_loss_rec_mean, train_loss_reg_mean, train_loss_mean, test_loss_rec_mean, test_loss_reg_mean, test_loss_mean))
@@ -150,11 +153,12 @@ if __name__ == '__main__':
     print('Training Done at {}, best reconstruction loss: {:.4f} in epoch {}'.format(time_end, best_reconstruction, best_epoch))
     
     # plot latent and output
-    assert args.d_latent in [1, 2, 32, 64]
+    assert args.d_latent in [1, 2, 16, 32, 64]
     if args.d_latent == 1:
         plot_1d(test_loader, model, figure_path, device)
     elif args.d_latent == 2:
         plot_2d(test_loader, model, figure_path, device)
     else:
-        plot_32_64d(test_loader, model, figure_path, device, args.d_latent)
+        plot_16_32_64d(test_loader, model, figure_path, device, args.d_latent)
+        plot_16_32_64d_3(test_loader, model, figure_path, device, args.d_latent)
     print('Plot Done')

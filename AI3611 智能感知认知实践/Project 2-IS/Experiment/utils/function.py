@@ -1,9 +1,11 @@
 import os
+import random
 import torch
 import torch.nn.functional as F
 from torchvision.utils import save_image
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
@@ -13,6 +15,14 @@ def loss_funtion(inputs, outputs, logvar, mu):
     loss_regularization = -0.5 * torch.sum(-torch.exp(logvar) + 1 + logvar - mu ** 2)
     loss_reconstruction = F.binary_cross_entropy(outputs, inputs, reduction='sum')
     return loss_regularization, loss_reconstruction
+
+def setup_seed(seed=2025):
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
 
 def plot_line(regularization_loss, reconstruction_loss, total_loss, figure_path):
     epoch = np.arange(1, len(total_loss['train']) + 1)
@@ -78,7 +88,7 @@ def plot_2d(data_loader, model, figure_path, device):
     latents, labels = torch.cat(latents).detach().cpu().numpy(), torch.cat(labels).detach().cpu().numpy() # (N, 2), (N, )
     
     for label in range(10):
-        x_latent, y_latent = latents[labels == label].transpose(0, 1)
+        x_latent, y_latent = latents[labels == label][:, 0], latents[labels == label][:, 1]
         plt.scatter(x_latent, y_latent, s=5, alpha=1.0, label=str(label))
     plt.xlabel('Latent x')
     plt.ylabel('Latent y')
@@ -89,10 +99,10 @@ def plot_2d(data_loader, model, figure_path, device):
     plt.savefig(os.path.join(figure_path, 'latent_2d.png'))
     plt.close()
 
-def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
-    assert dimension in [32, 64]
+def plot_16_32_64d(data_loader, model, figure_path, device, dimension: int):
+    assert dimension in [16, 32, 64]
     
-    # plot output on latent 32/64d space
+    # plot output on latent 16/32/64d space
     latent = torch.randn(400, dimension).to(device) # use (0, 1) gaussion distribution instead
     output = model.latent2output(latent)
     save_image(output, os.path.join(figure_path, f'output_{dimension}d.png'), nrow=20)
@@ -107,9 +117,10 @@ def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
         labels.append(label)
     latents, labels = torch.cat(latents).detach().cpu().numpy(), torch.cat(labels).detach().cpu().numpy() # (N, 32/64), (N, )
     
-    # decomposition latents 32/64d -> 2d for visualization
+    # decomposition latents 16/32/64d -> 2d for visualization
     latents_2d_PCA = PCA(n_components=2).fit_transform(latents)
     latents_2d_TSNE = TSNE(n_components=2).fit_transform(latents)
+    
     # PCA visualization
     for label in range(10):
         x_latent_PCA, y_latent_PCA = latents_2d_PCA[labels == label][:, 0], latents_2d_PCA[labels == label][:, 1]
@@ -134,4 +145,59 @@ def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
     plt.grid()
     plt.tight_layout()
     plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_tsne.png'))
+    plt.close()
+    
+def plot_16_32_64d_3(data_loader, model, figure_path, device, dimension: int, save: bool = True):
+    assert dimension in [16, 32, 64]
+    
+    # plot latent on MNIST dataset
+    latents, labels = [], []
+    for img, label in data_loader:
+        img, label = img.to(device), label.to(device)
+        with torch.no_grad():
+            latent = model.input2latent(img)
+        latents.append(latent)
+        labels.append(label)
+    latents, labels = torch.cat(latents).detach().cpu().numpy(), torch.cat(labels).detach().cpu().numpy() # (N, 32/64), (N, )
+    
+    # decomposition latents 16/32/64d -> 3d for visualization
+    latents_2d_PCA = PCA(n_components=3).fit_transform(latents)
+    latents_2d_TSNE = TSNE(n_components=3).fit_transform(latents)
+    
+    # PCA visualization
+    fig = plt.figure(figsize=(6, 6))
+    ax = fig.add_subplot(111, projection='3d')
+    for label in range(10):
+        x_latent_PCA, y_latent_PCA, z_latent_PCA = latents_2d_PCA[labels == label][:, 0], latents_2d_PCA[labels == label][:, 1], latents_2d_PCA[labels == label][:, 2]
+        ax.scatter(x_latent_PCA, y_latent_PCA, z_latent_PCA, s=5, alpha=1.0, label=str(label))
+    ax.set_xlabel('Latent x')
+    ax.set_ylabel('Latent y')
+    ax.set_zlabel('Latent z')
+    ax.set_title(f'{dimension}D Latent Distribution (PCA)')
+    ax.legend()
+    ax.grid()
+    plt.tight_layout()
+    if save:
+        plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_pca.png'))
+    else:
+        plt.show()
+    plt.close()
+    
+    # t-SNE visualization
+    fig = plt.figure(figsize=(6, 6))
+    ax = fig.add_subplot(111, projection='3d')
+    for label in range(10):
+        x_latent_TSNE, y_latent_TSNE, z_latent_TSNE = latents_2d_TSNE[labels == label][:, 0], latents_2d_TSNE[labels == label][:, 1], latents_2d_TSNE[labels == label][:, 2]
+        ax.scatter(x_latent_TSNE, y_latent_TSNE, z_latent_TSNE, s=5, alpha=1.0, label=str(label))
+    ax.set_xlabel('Latent x')
+    ax.set_ylabel('Latent y')
+    ax.set_zlabel('Latent z')
+    ax.set_title(f'{dimension}D Latent Distribution (t-SNE)')
+    ax.legend()
+    ax.grid()
+    plt.tight_layout()
+    if save:
+        plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_tsne.png'))
+    else:
+        plt.show()
     plt.close()
