@@ -28,6 +28,7 @@ if __name__ == '__main__':
     os.makedirs(save_path, exist_ok=True)
     model_path = os.path.join(save_path, 'checkpoint')
     figure_path = os.path.join(save_path, 'figure')
+    loss_path = os.path.join(save_path, 'loss.txt') # record final loss
     os.makedirs(model_path, exist_ok=True)
     os.makedirs(figure_path, exist_ok=True)
     
@@ -87,7 +88,7 @@ if __name__ == '__main__':
         train_loss_rec_mean = np.mean(train_loss_rec) / args.batch_size
         train_loss_reg_mean = np.mean(train_loss_reg) / args.batch_size
         
-        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f} Learning Rate: {:.6f}'.format(epoch, args.max_epochs, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean, optimizer.param_groups[0]['lr']))
+        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, args.max_epochs, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean))
         
         # test VAE
         test_loss, test_loss_rec, test_loss_reg = [], [], []
@@ -138,6 +139,11 @@ if __name__ == '__main__':
         if epoch % args.save_interval == 0:
             path_checkpoint = os.path.join(model_path, 'checkpoint_epoch_{}.pkl'.format(epoch))
             torch.save(checkpoint, path_checkpoint)
+            
+    # record final loss
+    file = open(loss_path, 'a')
+    file.write('Training:\nReconstruction Loss: {:.2f}\nRegularization Loss: {:.2f}\nTotal Loss: {:.2f}\nTesting:\nReconstruction Loss: {:.2f}\nRegularization Loss: {:.2f}\nTotal Loss: {:.2f}'.format(train_loss_rec_mean, train_loss_reg_mean, train_loss_mean, test_loss_rec_mean, test_loss_reg_mean, test_loss_mean))
+    file.close
     
     # complete trainig
     time_end = datetime.strftime(datetime.now(), '%m-%d_%H-%M')
