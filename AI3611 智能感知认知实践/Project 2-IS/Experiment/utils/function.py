@@ -89,11 +89,13 @@ def plot_2d(data_loader, model, figure_path, device):
     plt.savefig(os.path.join(figure_path, 'latent_2d.png'))
     plt.close()
 
-def plot_32d(data_loader, model, figure_path, device):
-    # plot output on latent 32d space
-    latent = torch.randn(400, 32).to(device) # use (0, 1) gaussion distribution instead
+def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
+    assert dimension in [32, 64]
+    
+    # plot output on latent 32/64d space
+    latent = torch.randn(400, dimension).to(device) # use (0, 1) gaussion distribution instead
     output = model.latent2output(latent)
-    save_image(output, os.path.join(figure_path, 'output_32d.png', nrow=20))
+    save_image(output, os.path.join(figure_path, f'output_{dimension}d.png', nrow=20))
     
     # plot latent on MNIST dataset
     latents, labels = [], []
@@ -103,9 +105,9 @@ def plot_32d(data_loader, model, figure_path, device):
             latent = model.input2latent(img)
         latents.append(latent)
         labels.append(label)
-    latents, labels = torch.cat(latents).detach().cpu().numpy(), torch.cat(labels).detach().cpu().numpy() # (N, 32), (N, )
+    latents, labels = torch.cat(latents).detach().cpu().numpy(), torch.cat(labels).detach().cpu().numpy() # (N, 32/64), (N, )
     
-    # decomposition latents 32d -> 2d for visualization
+    # decomposition latents 32/64d -> 2d for visualization
     latents_2d_PCA = PCA(n_components=2).fit_transform(latents)
     latents_2d_TSNE = TSNE(n_components=2).fit_transform(latents)
     
@@ -115,11 +117,11 @@ def plot_32d(data_loader, model, figure_path, device):
         plt.scatter(x_latent_PCA, y_latent_PCA, s=5, alpha=1.0, label=str(label))
     plt.xlabel('Latent x')
     plt.ylabel('Latent y')
-    plt.title('32D Latent Distribution (PCA)')
+    plt.title(f'{dimension}D Latent Distribution (PCA)')
     plt.legend()
     plt.grid()
     plt.tight_layout()
-    plt.savefig(os.path.join(figure_path, 'latent_32d_pca.png'))
+    plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_pca.png'))
     plt.close()
     
     # t-SNE visualization
@@ -128,9 +130,9 @@ def plot_32d(data_loader, model, figure_path, device):
         plt.scatter(x_latent_TSNE, y_latent_TSNE, s=5, alpha=1.0, label=str(label))
     plt.xlabel('Latent x')
     plt.ylabel('Latent y')
-    plt.title('32D Latent Distribution (t-SNE)')
+    plt.title(f'{dimension}D Latent Distribution (t-SNE)')
     plt.legend()
     plt.grid()
     plt.tight_layout()
-    plt.savefig(os.path.join(figure_path, 'latent_32d_tsne.png'))
+    plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_tsne.png'))
     plt.close()

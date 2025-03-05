@@ -32,29 +32,33 @@ if __name__ == '__main__':
     os.makedirs(figure_path, exist_ok=True)
     
     # create dataloader
-    train_dataset = MNIST('./data/', train=True, transform=transforms.ToTensor(), download=True) # without other transforms for systhesis task
-    test_dataset = MNIST('./data/', train=False, transform=transforms.ToTensor(), download=True)
+    data_path = os.path.join(BASE_DIR, 'data')
+    train_dataset = MNIST(data_path, train=True, transform=transforms.ToTensor(), download=True) # without other transforms for systhesis task
+    test_dataset = MNIST(data_path, train=False, transform=transforms.ToTensor(), download=True)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
     
     # create model
     model = VAE(args.d_input, args.d_hidden, args.d_latent)
     
-    # create optimizer
+    # create optimizer and scheduler
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=args.factor, patience=args.patience)
     
-    # load model and optimizer if pretrain
+    # load state if pretrain
     strat_epoch = 1
     if args.pretrain:
         checkpoint = torch.load(args.path_checkpoint, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         strat_epoch = checkpoint['epoch'] + 1
+    model.to(device)
     
     # initialize recorder
     regularization_loss = {'train': [], 'test': []}
     reconstruction_loss = {'train': [], 'test': []}
-    total_loss = {'train': [], 'test': []}
+    total_losses = {'train': [], 'test': []}
     best_epoch = 0
     best_reconstruction = checkpoint['best_reconstruction_loss'] if args.pretrain else 1e5
     
@@ -73,7 +77,7 @@ if __name__ == '__main__':
             loss_regularization, loss_reconstruction = loss_funtion(inputs, outputs, logvar, mu)
             total_loss = loss_reconstruction + args.epsilon * loss_regularization
             total_loss.backward()
-            optimizer.stop()
+            optimizer.step()
             
             # record loss
             train_loss.append(total_loss.item())
@@ -81,11 +85,14 @@ if __name__ == '__main__':
             train_loss_reg.append(loss_regularization.item())
             
         # compute mean loss
-        train_loss_mean = np.mean(train_loss)
-        train_loss_rec_mean = np.mean(train_loss_rec)
-        train_loss_reg_mean = np.mean(train_loss_reg)
+        train_loss_mean = np.mean(train_loss) / args.batch_size
+        train_loss_rec_mean = np.mean(train_loss_rec) / args.batch_size
+        train_loss_reg_mean = np.mean(train_loss_reg) / args.batch_size
         
-        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, args.max_epochs + 1, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean))
+        #update scheduler
+        scheduler.step(train_loss_mean)
+        
+        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f} Learning Rate: {:.6f}'.format(epoch, args.max_epochs + 1, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean, optimizer.param_groups[0]['lr']))
         
         # test VAE
         test_loss, test_loss_rec, test_loss_reg = [], [], []
@@ -106,26 +113,27 @@ if __name__ == '__main__':
             test_loss_reg.append(loss_regularization.item())
             
         # compute mean loss
-        test_loss_mean = np.mean(test_loss)
-        test_loss_rec_mean = np.mean(test_loss_rec)
-        test_loss_reg_mean = np.mean(test_loss_reg)
+        test_loss_mean = np.mean(test_loss) / args.batch_size
+        test_loss_rec_mean = np.mean(test_loss_rec) / args.batch_size
+        test_loss_reg_mean = np.mean(test_loss_reg) / args.batch_size
         
-        print('Testing: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, args.max_epochs + 1, test_loss_rec_mean, test_loss_reg_mean, test_loss_mean))
+        print('Testing: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f}'.format(epoch, args.max_epochs, test_loss_rec_mean, test_loss_reg_mean, test_loss_mean))
         
         # record loss
         regularization_loss['train'].append(train_loss_reg_mean)
         reconstruction_loss['train'].append(train_loss_rec_mean)
-        total_loss['train'].append(train_loss_mean)
+        total_losses['train'].append(train_loss_mean)
         regularization_loss['test'].append(test_loss_reg_mean)
         reconstruction_loss['test'].append(test_loss_rec_mean)
-        total_loss['test'].append(test_loss_mean)
+        total_losses['test'].append(test_loss_mean)
         
         # plot loss curve
-        plot_line(regularization_loss, reconstruction_loss, total_loss, figure_path)
+        plot_line(regularization_loss, reconstruction_loss, total_losses, figure_path)
 
         # save model
         checkpoint = {'model_state_dict': model.state_dict(),
                       'optimizer_state_dict': optimizer.state_dict(),
+                      'scheduler_state_dict': scheduler.state_dict(),
                       'epoch': epoch,
                       'best_reconstruction_loss': best_reconstruction}
         if epoch >= 100 and best_reconstruction > test_loss_rec_mean:
@@ -142,11 +150,11 @@ if __name__ == '__main__':
     print('Training Done at {}, best reconstruction loss: {:.4f} in epoch {}'.format(time_end, best_reconstruction, best_epoch))
     
     # plot latent and output
-    assert args.d_latent in [1, 2, 32]
+    assert args.d_latent in [1, 2, 32, 64]
     if args.d_latent == 1:
         plot_1d(test_loader, model, figure_path, device)
     elif args.d_latent == 2:
         plot_2d(test_loader, model, figure_path, device)
     else:
-        plot_32d(test_loader, model, figure_path, device)
+        plot_32_64d(test_loader, model, figure_path, device, args.d_latent)
     print('Plot Done')
