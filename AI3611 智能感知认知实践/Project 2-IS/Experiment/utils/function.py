@@ -65,7 +65,7 @@ def plot_2d(data_loader, model, figure_path, device):
     x, y = torch.arange(-5, 5, 0.5), torch.arange(-5, 5, 0.5)
     latent = torch.cartesian_prod(x, y).to(device) # 400 samples (400, 2)
     output = model.latent2output(latent)
-    save_image(output, os.path.join(figure_path, 'output_2d.png', nrow=20))
+    save_image(output, os.path.join(figure_path, 'output_2d.png'), nrow=20)
     
     # plot latent on MNIST dataset
     latents, labels = [], []
@@ -95,7 +95,7 @@ def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
     # plot output on latent 32/64d space
     latent = torch.randn(400, dimension).to(device) # use (0, 1) gaussion distribution instead
     output = model.latent2output(latent)
-    save_image(output, os.path.join(figure_path, f'output_{dimension}d.png', nrow=20))
+    save_image(output, os.path.join(figure_path, f'output_{dimension}d.png'), nrow=20)
     
     # plot latent on MNIST dataset
     latents, labels = [], []
@@ -110,10 +110,9 @@ def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
     # decomposition latents 32/64d -> 2d for visualization
     latents_2d_PCA = PCA(n_components=2).fit_transform(latents)
     latents_2d_TSNE = TSNE(n_components=2).fit_transform(latents)
-    
     # PCA visualization
     for label in range(10):
-        x_latent_PCA, y_latent_PCA = latents_2d_PCA[labels == label].transpose(0, 1)
+        x_latent_PCA, y_latent_PCA = latents_2d_PCA[labels == label][:, 0], latents_2d_PCA[labels == label][:, 1]
         plt.scatter(x_latent_PCA, y_latent_PCA, s=5, alpha=1.0, label=str(label))
     plt.xlabel('Latent x')
     plt.ylabel('Latent y')
@@ -126,7 +125,7 @@ def plot_32_64d(data_loader, model, figure_path, device, dimension: int):
     
     # t-SNE visualization
     for label in range(10):
-        x_latent_TSNE, y_latent_TSNE = latents_2d_TSNE[labels == label].transpose(0, 1)
+        x_latent_TSNE, y_latent_TSNE = latents_2d_TSNE[labels == label][:, 0], latents_2d_PCA[labels == label][:, 1]
         plt.scatter(x_latent_TSNE, y_latent_TSNE, s=5, alpha=1.0, label=str(label))
     plt.xlabel('Latent x')
     plt.ylabel('Latent y')

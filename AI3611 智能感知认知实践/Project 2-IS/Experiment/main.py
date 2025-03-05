@@ -41,9 +41,8 @@ if __name__ == '__main__':
     # create model
     model = VAE(args.d_input, args.d_hidden, args.d_latent)
     
-    # create optimizer and scheduler
+    # create optimizer
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=args.factor, patience=args.patience)
     
     # load state if pretrain
     strat_epoch = 1
@@ -51,7 +50,6 @@ if __name__ == '__main__':
         checkpoint = torch.load(args.path_checkpoint, map_location=device)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         strat_epoch = checkpoint['epoch'] + 1
     model.to(device)
     
@@ -89,10 +87,7 @@ if __name__ == '__main__':
         train_loss_rec_mean = np.mean(train_loss_rec) / args.batch_size
         train_loss_reg_mean = np.mean(train_loss_reg) / args.batch_size
         
-        #update scheduler
-        scheduler.step(train_loss_mean)
-        
-        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f} Learning Rate: {:.6f}'.format(epoch, args.max_epochs + 1, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean, optimizer.param_groups[0]['lr']))
+        print('Training: Epoch {} / {} Reconstruction Loss: {:.4f} Regularization Loss: {:.4f} Total Loss: {:.4f} Learning Rate: {:.6f}'.format(epoch, args.max_epochs, train_loss_rec_mean, train_loss_reg_mean, train_loss_mean, optimizer.param_groups[0]['lr']))
         
         # test VAE
         test_loss, test_loss_rec, test_loss_reg = [], [], []
@@ -133,7 +128,6 @@ if __name__ == '__main__':
         # save model
         checkpoint = {'model_state_dict': model.state_dict(),
                       'optimizer_state_dict': optimizer.state_dict(),
-                      'scheduler_state_dict': scheduler.state_dict(),
                       'epoch': epoch,
                       'best_reconstruction_loss': best_reconstruction}
         if epoch >= 100 and best_reconstruction > test_loss_rec_mean:

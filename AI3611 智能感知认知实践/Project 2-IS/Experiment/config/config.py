@@ -14,15 +14,11 @@ def parse_args():
     parse.add_argument('-path_checkpoint', type=str, default='output/xxx/checkpoint/checkpoint_best.pkl', help='the path to checkpoint to load')
     
     # training
-    parse.add_argument('-max_epochs', type=int, default=200, help='the number of largest epoch to train')
+    parse.add_argument('-max_epochs', type=int, default=1, help='the number of largest epoch to train')
     parse.add_argument('-batch_size', type=int, default=256, help='batch size for dataloader')
-    parse.add_argument('-learning_rate', type=float, default=1e-2, help='learning rate')
+    parse.add_argument('-learning_rate', type=float, default=1e-4, help='learning rate')
     parse.add_argument('-epsilon', type=float, default=1.0, help='weight of regularization loss')
     parse.add_argument('-save_interval', type=int, default=100, help='save checkpoint every certain epochs')
-    
-    # scheduler
-    parse.add_argument('-factor', type=float, default=0.1, help='factor by which the learning rate will be reduced')
-    parse.add_argument('-patience', type=int, default=5, help='the number of allowed epochs with no improvement after which the learning rate will be reduced')
     
     opt = parse.parse_args()
     return opt
