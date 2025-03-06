@@ -131,7 +131,7 @@ def plot_16_32_64d(data_loader, model, figure_path, device, dimension: int):
     plt.legend()
     plt.grid()
     plt.tight_layout()
-    plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_pca.png'))
+    plt.savefig(os.path.join(figure_path, f'2D_latent_{dimension}d_pca.png'))
     plt.close()
     
     # t-SNE visualization
@@ -144,11 +144,11 @@ def plot_16_32_64d(data_loader, model, figure_path, device, dimension: int):
     plt.legend()
     plt.grid()
     plt.tight_layout()
-    plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_tsne.png'))
+    plt.savefig(os.path.join(figure_path, f'2D_latent_{dimension}d_tsne.png'))
     plt.close()
     
 def plot_16_32_64d_3(data_loader, model, figure_path, device, dimension: int, save: bool = True):
-    assert dimension in [16, 32, 64]
+    assert dimension in [16, 32, 64] # could be expanded to larger dimensions
     
     # plot latent on MNIST dataset
     latents, labels = [], []
@@ -178,7 +178,7 @@ def plot_16_32_64d_3(data_loader, model, figure_path, device, dimension: int, sa
     ax.grid()
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_pca.png'))
+        plt.savefig(os.path.join(figure_path, f'3D_latent_{dimension}d_pca.png'))
     else:
         plt.show()
     plt.close()
@@ -197,7 +197,7 @@ def plot_16_32_64d_3(data_loader, model, figure_path, device, dimension: int, sa
     ax.grid()
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(figure_path, f'latent_{dimension}d_tsne.png'))
+        plt.savefig(os.path.join(figure_path, f'3D_latent_{dimension}d_tsne.png'))
     else:
         plt.show()
     plt.close()

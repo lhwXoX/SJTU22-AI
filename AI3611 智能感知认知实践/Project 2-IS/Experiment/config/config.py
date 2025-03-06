@@ -10,11 +10,11 @@ def parse_args():
     parse.add_argument('-save_name', type=str, default=datetime.strftime(datetime.now(), '%m-%d_%H-%M'), help='the name of the folder to save model and figure')
     
     # pretrain
-    parse.add_argument('-pretrain', type=bool, default=False, help='load pretrained model')
+    parse.add_argument('-pretrain', type=bool, default=True, help='load pretrained model')
     parse.add_argument('-path_checkpoint', type=str, default='output/latent_64_epsilon_1.0/checkpoint/checkpoint_best.pkl', help='the path to checkpoint to load')
     
     # training
-    parse.add_argument('-max_epochs', type=int, default=200, help='the number of largest epoch to train')
+    parse.add_argument('-max_epochs', type=int, default=250, help='the number of largest epoch to train')
     parse.add_argument('-batch_size', type=int, default=256, help='batch size for dataloader')
     parse.add_argument('-learning_rate', type=float, default=1e-4, help='learning rate')
     parse.add_argument('-epsilon', type=float, default=1.0, help='weight of regularization loss')

@@ -1,0 +1,8 @@
+Training:
+Reconstruction Loss: 69.47
+Regularization Loss: 34.29
+Total Loss: 86.61
+Testing:
+Reconstruction Loss: 68.24
+Regularization Loss: 33.54
+Total Loss: 85.01
