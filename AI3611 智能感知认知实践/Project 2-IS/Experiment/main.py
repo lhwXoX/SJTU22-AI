@@ -153,7 +153,7 @@ if __name__ == '__main__':
     print('Training Done at {}, best reconstruction loss: {:.4f} in epoch {}'.format(time_end, best_reconstruction, best_epoch))
     
     # plot latent and output
-    assert args.d_latent in [1, 2, 16, 32, 64]
+    assert args.d_latent in [1, 2, 16, 32, 64] # could be extended to more dimensions
     if args.d_latent == 1:
         plot_1d(test_loader, model, figure_path, device)
     elif args.d_latent == 2:
