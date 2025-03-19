@@ -60,5 +60,5 @@ To better visualize the latent space in a 3D interactive interface, you can run 
 ### VAE Latent Space
 
 <p align="center"> <a>
-<img src="./output/latent_64_epsilon_1.0/figure/2D_latent_64d_tsne.png" width="300"><img src="./output/latent_64_epsilon_1.0/figure/3D_latent_64d_tsne.png" width="300" />
+<img src="./output/latent_64_epsilon_1.0/figure/2D_latent_64d_tsne.png" width="400"><img src="./output/latent_64_epsilon_1.0/figure/3D_latent_64d_tsne.png" width="300" />
 </a> </p>
